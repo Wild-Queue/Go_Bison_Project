@@ -1,0 +1,3 @@
+Bugs:
+1) Function IsEqual1 is int, but should be bool. Do not know, why it do not know this type
+
