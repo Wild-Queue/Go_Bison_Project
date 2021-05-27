@@ -79,8 +79,9 @@ void updateSymbolVal(char symbol, int val);
 void shiftRightSymbolVal(char symbol, int val);
 void shiftLeftSymbolVal(char symbol, int val);
 int IsEqual1(int first, int second);
+FILE *yyin;
 
-#line 84 "y.tab.c"
+#line 85 "y.tab.c"
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus
@@ -147,10 +148,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 15 "Analyser.y"
+#line 16 "Analyser.y"
 int num; char id;
 
-#line 154 "y.tab.c"
+#line 155 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -456,9 +457,9 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    37,    37,    38,    39,    40,    41,    42,    45,    46,
-      47,    48,    49,    50,    51,    54,    55,    56,    57,    60,
-      61
+       0,    38,    38,    39,    40,    41,    42,    43,    46,    47,
+      48,    49,    50,    51,    52,    55,    56,    57,    58,    61,
+      62
 };
 #endif
 
@@ -1254,121 +1255,121 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 37 "Analyser.y"
+#line 38 "Analyser.y"
     {;}
-#line 1260 "y.tab.c"
+#line 1261 "y.tab.c"
     break;
 
   case 3:
-#line 38 "Analyser.y"
+#line 39 "Analyser.y"
     {exit(EXIT_SUCCESS);}
-#line 1266 "y.tab.c"
+#line 1267 "y.tab.c"
     break;
 
   case 4:
-#line 39 "Analyser.y"
+#line 40 "Analyser.y"
     {printf("Printing %d\n", (yyvsp[0].num));}
-#line 1272 "y.tab.c"
+#line 1273 "y.tab.c"
     break;
 
   case 5:
-#line 40 "Analyser.y"
+#line 41 "Analyser.y"
     {;}
-#line 1278 "y.tab.c"
+#line 1279 "y.tab.c"
     break;
 
   case 6:
-#line 41 "Analyser.y"
+#line 42 "Analyser.y"
     {printf("Printing %d\n", (yyvsp[0].num));}
-#line 1284 "y.tab.c"
+#line 1285 "y.tab.c"
     break;
 
   case 7:
-#line 42 "Analyser.y"
+#line 43 "Analyser.y"
     {exit(EXIT_SUCCESS);}
-#line 1290 "y.tab.c"
+#line 1291 "y.tab.c"
     break;
 
   case 8:
-#line 45 "Analyser.y"
+#line 46 "Analyser.y"
     { updateSymbolVal((yyvsp[-3].id),(yyvsp[0].num)); }
-#line 1296 "y.tab.c"
+#line 1297 "y.tab.c"
     break;
 
   case 9:
-#line 46 "Analyser.y"
+#line 47 "Analyser.y"
     { updateSymbolVal((yyvsp[-2].id),(yyvsp[0].num)); }
-#line 1302 "y.tab.c"
+#line 1303 "y.tab.c"
     break;
 
   case 10:
-#line 47 "Analyser.y"
+#line 48 "Analyser.y"
     { updateSymbolVal((yyvsp[-2].id),(yyvsp[0].num)); }
-#line 1308 "y.tab.c"
+#line 1309 "y.tab.c"
     break;
 
   case 11:
-#line 48 "Analyser.y"
+#line 49 "Analyser.y"
     { shiftRightSymbolVal((yyvsp[-2].id), (yyvsp[0].num)); }
-#line 1314 "y.tab.c"
+#line 1315 "y.tab.c"
     break;
 
   case 12:
-#line 49 "Analyser.y"
+#line 50 "Analyser.y"
     { shiftLeftSymbolVal((yyvsp[-2].id), (yyvsp[0].num)); }
-#line 1320 "y.tab.c"
+#line 1321 "y.tab.c"
     break;
 
   case 13:
-#line 50 "Analyser.y"
+#line 51 "Analyser.y"
     {shiftLeftSymbolVal((yyvsp[-2].id), (yyvsp[0].num));}
-#line 1326 "y.tab.c"
+#line 1327 "y.tab.c"
     break;
 
   case 14:
-#line 51 "Analyser.y"
+#line 52 "Analyser.y"
     {shiftRightSymbolVal((yyvsp[-2].id), (yyvsp[0].num));}
-#line 1332 "y.tab.c"
+#line 1333 "y.tab.c"
     break;
 
   case 15:
-#line 54 "Analyser.y"
+#line 55 "Analyser.y"
     {(yyval.num) = (yyvsp[0].num);}
-#line 1338 "y.tab.c"
+#line 1339 "y.tab.c"
     break;
 
   case 16:
-#line 55 "Analyser.y"
+#line 56 "Analyser.y"
     {(yyval.num) = (yyvsp[-2].num) + (yyvsp[0].num);}
-#line 1344 "y.tab.c"
+#line 1345 "y.tab.c"
     break;
 
   case 17:
-#line 56 "Analyser.y"
+#line 57 "Analyser.y"
     {(yyval.num) = (yyvsp[-2].num) - (yyvsp[0].num);}
-#line 1350 "y.tab.c"
+#line 1351 "y.tab.c"
     break;
 
   case 18:
-#line 57 "Analyser.y"
+#line 58 "Analyser.y"
     {(yyval.num) = IsEqual1((yyvsp[-2].num),(yyvsp[0].num));}
-#line 1356 "y.tab.c"
+#line 1357 "y.tab.c"
     break;
 
   case 19:
-#line 60 "Analyser.y"
+#line 61 "Analyser.y"
     {(yyval.num) = (yyvsp[0].num);}
-#line 1362 "y.tab.c"
+#line 1363 "y.tab.c"
     break;
 
   case 20:
-#line 61 "Analyser.y"
+#line 62 "Analyser.y"
     {(yyval.num) = symbolVal((yyvsp[0].id));}
-#line 1368 "y.tab.c"
+#line 1369 "y.tab.c"
     break;
 
 
-#line 1372 "y.tab.c"
+#line 1373 "y.tab.c"
 
       default: break;
     }
@@ -1600,7 +1601,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 64 "Analyser.y"
+#line 65 "Analyser.y"
                      /* C code */
 
 int IsEqual1(int first, int second){
@@ -1654,8 +1655,10 @@ int main (void) {
 	for(i=0; i<52; i++) {
 		symbols[i] = 0;
 	}
-
-	return yyparse ( );
+	yyin = fopen("input.txt", "r");
+	yyparse();
+	fclose(yyin);
+	return 0;
 }
 
 void yyerror (char *s) {fprintf (stderr, "%s\n", s);} 

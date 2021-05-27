@@ -10,6 +10,7 @@ void updateSymbolVal(char symbol, int val);
 void shiftRightSymbolVal(char symbol, int val);
 void shiftLeftSymbolVal(char symbol, int val);
 int IsEqual1(int first, int second);
+FILE *yyin;
 %}
 
 %union {int num; char id;}         /* Yacc definitions */
@@ -114,8 +115,10 @@ int main (void) {
 	for(i=0; i<52; i++) {
 		symbols[i] = 0;
 	}
-
-	return yyparse ( );
+	yyin = fopen("input.txt", "r");
+	yyparse();
+	fclose(yyin);
+	return 0;
 }
 
 void yyerror (char *s) {fprintf (stderr, "%s\n", s);} 
