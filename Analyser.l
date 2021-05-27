@@ -19,7 +19,8 @@ int yylex();
 "char"					{return Type;}
 
 [a-zA-Z]			    {yylval.id = yytext[0]; return identifier;}
-[0-9]+                  {yylval.num = atoi(yytext); return number;}
+[-]?[1-9][0-9]*			{yylval.IntNum = atoi(yytext); return Inumber;}
+[-]?[1-9][0-9]*.[0-9]*	{yylval.DoubNum = atof(yytext);return Dnumber;}
 [ \t\n]                 ;
 [-+=<>;]           	    {return yytext[0];}
 .                       {ECHO; yyerror ("unexpected character");}
