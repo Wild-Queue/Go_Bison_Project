@@ -50,11 +50,13 @@ assignment	: Initialization identifier Type '=' exp  { updateSymbolVal($2,$5); }
 			| identifier LeftShift exp {shiftLeftSymbolVal($1, $3);}
 			| identifier RightShift exp {shiftRightSymbolVal($1, $3);}
 			;
+
 exp    	: term                  {$$ = $1;}
        	| exp '+' term          {$$ = $1 + $3;}
        	| exp '-' term          {$$ = $1 - $3;}
        	| exp IsEqual exp 		{$$ = IsEqual1($1,$3);}
        	;
+       	
 term   	: number                {$$ = $1;}
 		| identifier			{$$ = symbolVal($1);} 
         ;

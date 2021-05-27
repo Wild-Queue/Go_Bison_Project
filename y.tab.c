@@ -457,8 +457,8 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    37,    37,    38,    39,    40,    41,    42,    45,    46,
-      47,    48,    49,    50,    51,    53,    54,    55,    56,    58,
-      59
+      47,    48,    49,    50,    51,    54,    55,    56,    57,    60,
+      61
 };
 #endif
 
@@ -1332,37 +1332,37 @@ yyreduce:
     break;
 
   case 15:
-#line 53 "Analyser.y"
+#line 54 "Analyser.y"
     {(yyval.num) = (yyvsp[0].num);}
 #line 1338 "y.tab.c"
     break;
 
   case 16:
-#line 54 "Analyser.y"
+#line 55 "Analyser.y"
     {(yyval.num) = (yyvsp[-2].num) + (yyvsp[0].num);}
 #line 1344 "y.tab.c"
     break;
 
   case 17:
-#line 55 "Analyser.y"
+#line 56 "Analyser.y"
     {(yyval.num) = (yyvsp[-2].num) - (yyvsp[0].num);}
 #line 1350 "y.tab.c"
     break;
 
   case 18:
-#line 56 "Analyser.y"
+#line 57 "Analyser.y"
     {(yyval.num) = IsEqual1((yyvsp[-2].num),(yyvsp[0].num));}
 #line 1356 "y.tab.c"
     break;
 
   case 19:
-#line 58 "Analyser.y"
+#line 60 "Analyser.y"
     {(yyval.num) = (yyvsp[0].num);}
 #line 1362 "y.tab.c"
     break;
 
   case 20:
-#line 59 "Analyser.y"
+#line 61 "Analyser.y"
     {(yyval.num) = symbolVal((yyvsp[0].id));}
 #line 1368 "y.tab.c"
     break;
@@ -1600,7 +1600,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 62 "Analyser.y"
+#line 64 "Analyser.y"
                      /* C code */
 
 int IsEqual1(int first, int second){
