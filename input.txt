@@ -1,9 +1,0 @@
-a = 10
-b = 15
-d = 20
-a = a + b
-print a
-a = -15
-c = 1.154
-print c
-exit
