@@ -4,16 +4,16 @@ int yylex();
 #include <stdio.h>     /* C declarations used in actions */
 #include <stdlib.h>
 #include <ctype.h>
-double symbols[52];
-double symbolVal(char symbol);
-void updateSymbolVal(char symbol, double val);
+int symbols[52];
+int symbolVal(char symbol);
+void updateSymbolVal(char symbol, int val);
 void shiftRightSymbolVal(char symbol, int val);
 void shiftLeftSymbolVal(char symbol, int val);
 _Bool IsEqual1(int first, int second);
 FILE *yyin;
 %}
 
-%union {int IntNum; char id; double DoubNum;}         /* Yacc definitions */
+%union {int num; char id;}         /* Yacc definitions */
 %start line
 %token print
 %token Initialization
@@ -26,11 +26,9 @@ FILE *yyin;
 %token ColonEquality
 %token IsEqual;
 
-%token <IntNum> Inumber
-%token <DoubNum> Dnumber
+%token <num> number
 %token <id> identifier
-%type <IntNum> line 
-%type <DoubNum> exp term 
+%type <num> line exp term 
 %type <id> assignment
 
 %%
@@ -39,9 +37,9 @@ FILE *yyin;
 
 line    : assignment			{;}
 		| exit_command			{exit(EXIT_SUCCESS);}
-		| print exp 			{printf("Printing %g\n", $2);}
+		| print exp 			{printf("Printing %d\n", $2);}
 		| line assignment 		{;}
-		| line print exp 		{printf("Printing %g\n", $3);}
+		| line print exp 		{printf("Printing %d\n", $3);}
 		| line exit_command 	{exit(EXIT_SUCCESS);}
         ;
 
@@ -60,8 +58,7 @@ exp    	: term                  {$$ = $1;}
        	| exp IsEqual exp 		{$$ = IsEqual1($1,$3);}
        	;
        	
-term   	: Inumber               {$$ = $1;}
-		| Dnumber				{$$ = $1;}
+term   	: number               {$$ = $1;}
 		| identifier			{$$ = symbolVal($1);} 
         ;
 
@@ -83,14 +80,14 @@ int computeSymbolIndex(char token)
 } 
 
 /* returns the value of a given symbol */
-double symbolVal(char symbol)
+int symbolVal(char symbol)
 {
 	int bucket = computeSymbolIndex(symbol);
 	return symbols[bucket];
 }
 
 /* updates the value of a given symbol */
-void updateSymbolVal(char symbol, double val)
+void updateSymbolVal(char symbol, int val)
 {
 	int bucket = computeSymbolIndex(symbol);
 	symbols[bucket] = val;

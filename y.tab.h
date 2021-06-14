@@ -57,9 +57,8 @@ extern int yydebug;
     RightShift = 263,
     ColonEquality = 264,
     IsEqual = 265,
-    Inumber = 266,
-    Dnumber = 267,
-    identifier = 268
+    number = 266,
+    identifier = 267
   };
 #endif
 /* Tokens.  */
@@ -71,18 +70,17 @@ extern int yydebug;
 #define RightShift 263
 #define ColonEquality 264
 #define IsEqual 265
-#define Inumber 266
-#define Dnumber 267
-#define identifier 268
+#define number 266
+#define identifier 267
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
 #line 16 "Analyser.y"
-int IntNum; char id; double DoubNum;
+int num; char id;
 
-#line 86 "y.tab.h"
+#line 84 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
