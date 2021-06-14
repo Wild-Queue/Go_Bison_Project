@@ -28,7 +28,7 @@ error_no = 0; //global variable for error count initialized to 0
 }
 
 //keywords
-%token <string> T_BREAK T_CASE T_CHAN T_CONST T_CONTINUE T_DEFAULT T_DEFER T_ELSE T_FALLTHROUGH T_FOR T_FUNC T_GO T_GOTO T_IF T_IMPORT T_INTERFACE T_MAP T_PACKAGE T_RANGE T_RETURN T_SELECT T_STRUCKT T_SWITCH T_TYPE T_VAR T_ID 
+%token <string> T_BREAK T_CASE T_CHAN T_CONST T_CONTINUE T_DEFAULT T_DEFER T_ELSE T_FALLTHROUGH T_FOR T_FUNC T_GO T_GOTO T_IF T_IMPORT T_INTERFACE T_MAP T_PACKAGE T_RANGE T_RETURN T_SELECT T_STRUCKT T_SWITCH T_TYPE T_VAR T_ID
 
 //type
 %token <string> T_INT T_INT8 T_INT16 T_INT32 T_INT64 T_UINT T_UINT8 T_UINT16 T_UINT32 T_UINT64 T_UINTPTR T_FLOAT32 T_FLOAT64 T_COMPLEX128 T_COMPLEX64 T_BOOL T_BITE T_RUNE T_STRING T_ERROR 
@@ -50,12 +50,6 @@ error_no = 0; //global variable for error count initialized to 0
 
 //chars
 %token <character> T_CCONST
-
-//imaginary const
-%token<string> T_IMCONST
-
-// End of file
-%token <string> T_EOF
 
 
 //operators
@@ -140,164 +134,70 @@ T_SENDOP // <-
 %nonassoc T_LPAREN T_RPAREN
 
 //start symbol of the Grammar = program
-//
+//%start program;
+
 */
-%start program;
 
 %%
 
-program : packagePart importPart mainPart T_EOF
-        ;
+line : line 
 
-mainPart  : functionPart mainPart
-          | variablePart mainPart
-          | variablePart
-          | functionPart
-          |
-          ;
-
-variablePart :  emptySpace varDec variablePart
-            | emptySpace
-              ;
-
-packagePart : T_PACKAGE emptySpace T_ID T_NL emptySpace
-            ;
-
-importPart : importPart T_IMPORT emptySpace T_SCONST T_NL
-            | importPart T_IMPORT T_LPAREN importLib T_RPAREN T_NL
-            | T_IMPORT emptySpace T_SCONST T_NL
-            | T_IMPORT T_LPAREN importLib T_RPAREN T_NL
-            | /*empty*/
-            ; 
-
-importLib : emptySpace T_SCONST emptySpace
-          | emptySpace T_SCONST T_NL importLib emptySpace
-          ;
-
-functionPart : emptySpace T_FUNC emptySpace T_ID T_LPAREN funArgum T_RPAREN varType T_LCURLYBR bodyFunc T_RCURLYBR T_NL emptySpace functionPart
-              | emptySpace T_FUNC emptySpace T_ID T_LPAREN funArgum T_RPAREN T_LCURLYBR bodyFunc T_RCURLYBR T_NL emptySpace functionPart
-              | emptySpace T_FUNC emptySpace T_ID T_LPAREN funArgum T_RPAREN varType T_LCURLYBR bodyFunc T_RCURLYBR
-              | emptySpace T_FUNC emptySpace T_ID T_LPAREN funArgum T_RPAREN T_LCURLYBR bodyFunc T_RCURLYBR
-              | /*empty*/
-              ;
-/**/
-funArgum : emptySpace T_ID varType T_COMMA funArgum
-        | emptySpace T_ID varType
-        | emptySpace
-        ;
-/*Дописать возращение массивов, функций и 2 параместа*/
-varType : T_INT 
-        | T_INT8
-        | T_INT16
-        | T_INT32
-        | T_INT64
-        | T_UINT
-        | T_UINT8
-        | T_UINT16
-        | T_UINT32
-        | T_UINT64
-        | T_UINTPTR
-        | T_FLOAT32
-        | T_FLOAT64
-        | T_COMPLEX128
-        | T_COMPLEX64
-        | T_BOOL
-        | T_BITE
-        | T_RUNE
-        | T_STRING 
-        | T_ERROR
-        | T_MULTOP T_INT 
-        | T_MULTOP T_INT8
-        | T_MULTOP T_INT16
-        | T_MULTOP T_INT32
-        | T_MULTOP T_INT64
-        | T_MULTOP T_UINT
-        | T_MULTOP T_UINT8
-        | T_MULTOP T_UINT16
-        | T_MULTOP T_UINT32
-        | T_MULTOP T_UINT64
-        | T_MULTOP T_UINTPTR
-        | T_MULTOP T_FLOAT32
-        | T_MULTOP T_FLOAT64
-        | T_MULTOP T_COMPLEX128
-        | T_MULTOP T_COMPLEX64
-        | T_MULTOP T_BOOL
-        | T_MULTOP T_BITE
-        | T_MULTOP T_RUNE
-        | T_MULTOP T_STRING 
-        | T_MULTOP T_ERROR
-        ;
-
-bodyFunc : codePart bodyFunc
-        | inerFunc bodyFunc
-        | compStatement bodyFunc
-        |
-        ;
-
-codePart  : 
-          ;
-
-
-varDec : emptySpace T_VAR emptySpace varSpec T_NL emptySpace varDec
-        | emptySpace T_VAR T_LPAREN emptySpace varList emptySpace T_RPAREN T_NL emptySpace varDec
-        | 
-        ;
-
-varList : emptySpace varSpec T_NL varList
-        | emptySpace varSpec emptySpace
-        |
-        ;
-
-varSpec : T_ID 
-        ;
-
-compStatement : emptySpace T_LCURLYBR emptySpace bodyFunc emptySpace T_RCURLYBR
-              ;
-
-inerFunc  : emptySpace T_ID T_ASSIGN emptySpace T_FUNC emptySpace T_LPAREN funArgum T_RPAREN varType T_LCURLYBR bodyFunc T_RCURLYBR T_NL
-          | emptySpace T_ID T_ASSIGN emptySpace T_FUNC emptySpace T_LPAREN funArgum T_RPAREN T_LCURLYBR bodyFunc T_RCURLYBR T_NL
-          | /*empty*/
-          ;
-
-functionCall : emptySpace T_ID T_LPAREN argumentList T_RPAREN T_NL emptySpace
-            ;
-
-argumentList : emptySpace T_ID T_COMMA emptySpace argumentList
-            | emptySpace functionCall T_COMMA emptySpace argumentList
-            | emptySpace numbers T_COMMA emptySpace argumentList
-            | emptySpace T_ID
-            | emptySpace functionCall
-            | emptySpace numbers
-            |
-            ;
-
-numbers : T_ICONST
-        | T_SCONST
-        | T_RCONST
-        | T_BCONST
-        | T_CCONST
-        ;
-
-Operand : literal
-        | OperandName
-        | T_LPAREN expression T_RPAREN
-        ;
-
-literal : basicLit
-        | compLit
-        | functionLit
-
-expression : unariExpr expression binaryOperator
-           ;
-
-unariExpr :
-          ;
-
-binaryOperator : 
-                ;
-
-emptySpace : emptySpace T_NL
-          | T_NL
-          | /*empty*/
-          ;
 %%
+int  main(int argc,char ** argv){
+    int out;
+    
+    //check if an input file is passed as an argument
+  if(argc<2){
+        printf("No input file!\n");
+    exit(1);
+    }
+    
+  yyin = fopen(argv[1],"r");
+    strcpy(filename, argv[1]);
+
+    if (yyin == NULL) {
+        printf("File not found!\n");
+        exit(1);
+    }
+    
+    //input file ok!
+    
+    //symbol table initialize/create
+    if(!(symbol=hashtbl_create(16, NULL))) {
+    fprintf(stderr, "ERROR: hashtbl_create() failed\n");
+    exit(EXIT_FAILURE);
+    }
+
+        
+    out=yyparse();
+    printf("Syntax analyzer started.\n");
+    
+
+    if(!out) {// yyparse == 0 - parsing completed
+    printf("Syntax analyzer finished succesfully.\n");
+    fclose(yyin);
+    printf("File closed succesfully\n");
+    return(0);
+    }
+    
+    else { //yyparse()==1 - could not complete parsing
+        printf("Syntax analyzer failed\n");
+        hashtbl_destroy(symbol);
+        fclose(yyin); // close input file
+        printf("File closed succesfully\n");
+        return(1);
+    }
+
+  
+  
+}
+
+
+
+extern int line_no;
+
+void yyerror(char *s) {
+    error_no++;
+    fprintf(stderr, "line %d: %s\n", line_no, s);
+}
+void yyerror (char *s) {fprintf (stderr, "%s\n", s);} 
