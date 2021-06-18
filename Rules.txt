@@ -1,157 +1,3 @@
-/* BLOCK A: Statements block*/
-%{
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdlib.h>
-#include <math.h>
-/*#include "hashtbl.c" //include the hash table
-HASHTBL *symbol; //Symbol Table declaration (global)
-*/
-
-//#define MAX_LINE_SIZE 256
-int yywrap (void);
-void yyerror (char *s);
-int yylex();
-#include <ctype.h>
-int symbols[52];
-int symbolVal(char symbol);
-void updateSymbolVal(char symbol, int val);
-void shiftRightSymbolVal(char symbol, int val);
-void shiftLeftSymbolVal(char symbol, int val);
-_Bool IsEqual1(int first, int second);
-
-
-char filename[64];
-FILE *yyin;
-int scope; //global variable for scope, initialized to 0
-//error_no = 0; //global variable for error count initialized to 0
-#define MAX_ERRORS 5 //max number of errors
-
-%}
-
-%union {
-  unsigned int integer;
-  double real;
-  char *string;
-  char character;
-  int boolean;
-}
-
-//keywords
-%token <string> T_BREAK T_CASE T_CHAN T_CONST T_CONTINUE T_DEFAULT T_DEFER T_ELSE T_FALLTHROUGH T_FOR T_FUNC T_GO T_GOTO T_IF T_IMPORT T_INTERFACE T_MAP T_PACKAGE T_RANGE T_RETURN T_SELECT T_STRUCT T_SWITCH T_TYPE T_VAR T_ID 
-
-//type
-%token <string> T_INT T_INT8 T_INT16 T_INT32 T_INT64 T_UINT T_UINT8 T_UINT16 T_UINT32 T_UINT64 T_UINTPTR T_FLOAT32 T_FLOAT64 T_COMPLEX128 T_COMPLEX64 T_BOOL T_BITE T_RUNE T_STRING T_ERROR 
-
-//function
-%token <string> T_MAKE T_LEN T_CAP T_NEW T_APPEND T_COPY T_CLOSE T_DELETE T_COMPLEX T_REAL T_IMAG T_PANIC T_RECOVER
-
-//integer consts
-%token <integer> T_ICONST
-
-//string consts
-%token <string> T_SCONST
-
-//real consts
-%token <real> T_RCONST
-
-//logical
-%token <boolean> T_BCONST
-
-//chars
-%token <character> T_CCONST
-
-//imaginary const
-%token<string> T_IMCONST
-
-// End of file
-%token <string> T_EOF
-
-
-//operators
-%token <string> 
-T_LESS
-T_GREAT
-T_LESSOREQU
-T_GREATOREQU
-T_NOTEQU
-T_EQU
-
-T_ANDOP
-T_OROP
-T_NOTOP
-
-T_ADDOP // +
-T_MULTOP // *
-T_SUBTROP // -
-T_DIVOP // /
-T_MOD // %
-T_ADDASSOP // "+="
-T_MULTASSOP  // "*=
-T_SUBTRASSOP  // "-=
-T_DIVASSOP // "/= 
-
-T_DOUBLEPLUSOP // ++
-T_DOUBLEMINUSOP // --
-
-T_TAB
-T_NL // NEW LINE
-
-T_POINTER //*
-T_REFERENCE //&
-
-T_LCURLYBR // {
-T_RCURLYBR // }
-T_LPAREN // (
-T_RPAREN // )
-T_LBRACK // [
-T_RBRACK // ]
-
-T_SEMI // ;
-T_DOT //.
-T_COMMA // ,
-T_COLON // :
-T_ASSIGN //":=" 
-T_ASSIGNOP // "="
-T_DOTDOTDOT // ...
-T_SIMPLCOMMENT //  //
-T_LBLOCKCOMMET // /*
-T_RBLOCKCOMMET // */
-
-T_BITANDOP // &
-T_BITOR // |
-T_XOR // ^
-T_LSHIFT // <<
-T_RSHIFT // >>
-T_BITCLEAR // &^
-T_MODEQUOP // %=
-T_ANDEQUOP // &=
-T_OREQUOP // |=
-T_XOREQUOP // ^=
-T_LSHIFTEQU // <<=
-T_RSHIFTEQU // >>=
-T_BITCLEAREQU // &^=
-T_SENDOP // <-
-
-
-/*
-*/
-
-//assoc and priority (operators)
-/*%nonassoc T_COLON
-%nonassoc T_LBRACK T_RBRACK
-%left T_OROP
-%nonassoc T_RELOP
-%nonassoc T_NOTOP
-%left T_ADDOP
-%left T_MULDIVANDOP
-%right T_EQU
-%nonassoc T_LPAREN T_RPAREN
-*/
-//start symbol of the Grammar = program
-/*
-*/
 %start SourceFile;
 
 %%
@@ -172,10 +18,10 @@ TypeLit : ArrayType
         | InterfaceType
         | SliceType
         | MapType
-        | ChanelType/*-11*/
+        | ChanelType
         ;
 
-ArrayType       : T_LBRACK ArrayLenght T_RBRACK ElementType   /*{printf("ArrayType");}*/
+ArrayType       : T_LBRACK ArrayLenght T_RBRACK ElementType   {printf("ArrayType");}
                 ;
 
 ArrayLenght : Expression
@@ -236,9 +82,8 @@ ParameterList : ParameterDecl
              | ParameterDecl T_COMMA ParameterList
              ;
 
-/*Поменял IdentifierList на ID во второй строчке*/
 ParameterDecl : IdentifierList T_DOTDOTDOT Type
-              | T_ID Type
+              | IdentifierList Type
               | T_DOTDOTDOT Type
               | Type
               ;
@@ -383,26 +228,26 @@ BasicLit        : T_ICONST
                 | T_CCONST
                 ;
 
-OperandName     : T_ID/*
-                | QualifiedIdent -6*/
+OperandName     : T_ID
+                | QualifiedIdent
                 ;
 
 QualifiedIdent  : PackageName T_DOT T_ID
                 ;
 
-CompositeLit    : LiteralType LiteralValue /*{printf("Accepted");}*/
+CompositeLit    : LiteralType LiteralValue
                 ;
 
-LiteralType     : StruckType 
-                | ArrayType 
+LiteralType     : StruckType
+                | ArrayType
                 | T_LBRACK T_DOTDOTDOT T_RBRACK ElementType
-                | SliceType 
+                | SliceType
                 | MapType
-                | TypeName 
+                | TypeName
                 ;
 
 LiteralValue    : T_LCURLYBR ElementList T_COMMA T_RCURLYBR
-                | T_LCURLYBR ElementList T_RCURLYBR 
+                | T_LCURLYBR ElementList T_RCURLYBR
                 | T_LCURLYBR T_RCURLYBR
                 ;
 
@@ -433,13 +278,13 @@ FunctionLit     : T_FUNC Signature FunctionBody
                 ;
 
 PrimaryExpr     : Operand 
-                | Convertion /*-7 Юхe*/
+                | Convertion
                 | MethodExpr
-                | PrimaryExpr Selector /*-0, но похуй*/
+                | PrimaryExpr Selector
                 | PrimaryExpr Index
                 | PrimaryExpr Slice
-                | PrimaryExpr TypeAssertion /*-2 */
-                | PrimaryExpr Arguments /*-8*/
+                | PrimaryExpr TypeAssertion
+                | PrimaryExpr Arguments
                 ;
 
 Selector        : T_DOT T_ID
@@ -458,7 +303,6 @@ Slice   : T_RBRACK Expression T_COLON Expression T_RBRACK
 TypeAssertion   : T_DOT T_LPAREN Type T_RPAREN
                 ;
 
-/*Ошибка*/
 Arguments       : T_LPAREN ExpressionList T_DOTDOTDOT T_COMMA T_RPAREN
                 | T_LPAREN Type T_COMMA ExpressionList T_DOTDOTDOT T_COMMA T_RPAREN
                 | T_LPAREN Type T_DOTDOTDOT T_COMMA T_RPAREN
@@ -471,7 +315,6 @@ Arguments       : T_LPAREN ExpressionList T_DOTDOTDOT T_COMMA T_RPAREN
                 | T_LPAREN ExpressionList T_RPAREN
                 | T_LPAREN Type T_COMMA ExpressionList T_RPAREN
                 | T_LPAREN Type T_RPAREN
-                | T_LPAREN T_RPAREN
                 ;
 
 MethodExpr      : ReceiverType T_DOT MethodName
@@ -531,9 +374,9 @@ Convertion      : Type T_LPAREN Expression T_COMMA T_RPAREN
                 | Type T_LPAREN Expression T_RPAREN
                 ;
 
-Statment        : Declaration 
-                | LabeledStmt /*-3 Йухууу*/
-                | SimpleStmt  /*-3 */ /*Траблы в ShortVarDecl -> IdentifierList*/
+Statment        : Declaration
+                | LabeledStmt
+                | SimpleStmt
                 | GoStmt
                 | ReturnStmt
                 | BreakStmt
@@ -542,7 +385,7 @@ Statment        : Declaration
                 | FallthoughStmt
                 | Block 
                 | IfStmt
-                | SwitchStmt /*-9*/
+                | SwitchStmt
                 | SelectStmt
                 | ForStmt
                 | DeferStmt
@@ -558,7 +401,7 @@ SimpleStmt      : EmptyStmt
 
 EmptyStmt       :
                 ;
-/*Проблема в Id T_colon или в T_ID Statment*/
+
 LabeledStmt     : Label T_COLON Statment
                 ;
 
@@ -583,7 +426,6 @@ Assignment      : ExpressionList assign_op ExpressionList
 
 assign_op       : add_op T_ASSIGNOP
                 | mul_op T_ASSIGNOP
-                | T_ASSIGNOP
                 ;
 
 IfStmt  : T_IF SimpleStmt T_SEMI Expression Block T_ELSE IfStmt 
@@ -597,8 +439,8 @@ IfStmt  : T_IF SimpleStmt T_SEMI Expression Block T_ELSE IfStmt
         | T_IF Expression Block 
         ;
 
-SwitchStmt      : ExprSwitchStmt /*-2*/
-                | TypeSwitchStmt /*-9*/
+SwitchStmt      : ExprSwitchStmt
+                | TypeSwitchStmt
                 ;
 
 ExprSwitchStmt  : T_SWITCH SimpleStmt T_SEMI Expression T_LCURLYBR ExprCaseClauseLoop T_RCURLYBR
@@ -622,7 +464,7 @@ ExprSwitchCase  : T_CASE ExpressionList
 
 TypeSwitchStmt  : T_SWITCH SimpleStmt T_SEMI TypeSwitchGuard T_LCURLYBR TypeCaseClauseLoop T_RCURLYBR
 /*                | T_SWITCH SimpleStmt TypeSwitchGuard T_LCURLYBR TypeCaseClauseLoop T_RCURLYBR*/
-                | T_SWITCH TypeSwitchGuard T_LCURLYBR TypeCaseClauseLoop T_RCURLYBR /*-5 TypeSwitchGuard*/
+                | T_SWITCH TypeSwitchGuard T_LCURLYBR TypeCaseClauseLoop T_RCURLYBR
                 ;
 
 TypeCaseClauseLoop      : TypeCaseClause TypeCaseClauseLoop
@@ -758,63 +600,3 @@ ImportSpec      : T_DOT ImportPath
 ImportPath      : T_SCONST
                 ;
 
-%%
-
-_Bool IsEqual1(int first, int second){
-        return first == second;
-}
-
-int computeSymbolIndex(char token)
-{
-        int idx = -1;
-        if(islower(token)) {
-                idx = token - 'a' + 26;
-        } else if(isupper(token)) {
-                idx = token - 'A';
-        }
-        return idx;
-} 
-
-/* returns the value of a given symbol */
-int symbolVal(char symbol)
-{
-        int bucket = computeSymbolIndex(symbol);
-        return symbols[bucket];
-}
-
-/* updates the value of a given symbol */
-void updateSymbolVal(char symbol, int val)
-{
-        int bucket = computeSymbolIndex(symbol);
-        symbols[bucket] = val;
-}
-
-// shift Right operation
-void shiftRightSymbolVal(char symbol, int val)
-{
-        int bucker = computeSymbolIndex(symbol);
-        for (int i = 0; i < val; i++)
-                symbols[bucker] = symbols[bucker] * 2;
-}
-
-// shift Left operation
-void shiftLeftSymbolVal(char symbol, int val)
-{
-        int bucker = computeSymbolIndex(symbol);
-        for (int i = 0; i < val; i++)
-                symbols[bucker] = symbols[bucker] / 2;
-}
-
-int main (void) {
-        /* init symbol table */
-        int i;
-        /*for(i=0; i<52; i++) {
-                symbols[i] = 0;
-        }*/
-        yyin = fopen("input.txt", "r");
-        yyparse();
-        fclose(yyin);
-        return 0;
-}
-
-void yyerror (char *s) {fprintf (stderr, "%s\n", s);} 

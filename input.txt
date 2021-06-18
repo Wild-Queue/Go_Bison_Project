@@ -1,5 +1,19 @@
-a = 10
-b = 15
-a = a + b
-Println a
-exit
+package main;
+import "fmt";
+func main();
+func man() {
+	var c int = 4;
+	a := 2;
+	b := a;
+	b := a;
+	c = a + b;
+	if x<0 {
+		a := 12;
+	};
+	for v := range a {
+		a := 1;
+	}
+	
+	fmt.Println(a, b); 
+	var a [5]int;
+}
