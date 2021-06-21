@@ -161,18 +161,18 @@ Type : TypeName
       | T_LPAREN Type T_RPAREN
       ;
 
-TypeName : T_ID
-         | QualifiedIdent
+TypeName : T_ID/*
+         | QualifiedIdent*/
          ;
 
-TypeLit : ArrayType
-        | StruckType
-        | PointerType
-        | FunctionType
-        | InterfaceType
-        | SliceType
-        | MapType
-        | ChanelType/*-11*/
+TypeLit : ArrayType/*No*/
+        | StruckType/*Yes*/
+        | PointerType/*Yes*/
+        | FunctionType/*Yes*/
+        | InterfaceType/*Yes*/
+        | SliceType/*YES*/
+        | MapType/*Yes*/
+        | ChanelType/*-11*//*Yes*/
         ;
 
 ArrayType       : T_LBRACK ArrayLenght T_RBRACK ElementType   /*{printf("ArrayType");}*/
@@ -183,6 +183,19 @@ ArrayLenght : Expression
 
 ElementType : Type
             ;
+
+SecondElementType       : TypeName
+                        | ArrayType 
+                        | StruckType 
+                        | PointerType 
+                        | FunctionType 
+                        | InterfaceType 
+                        | SliceType 
+                        | MapType 
+                        | T_LPAREN ChanelType T_RPAREN/**/
+                        | T_LPAREN SecondElementType T_RPAREN/**/
+                        ;
+
 
 SliceType : T_LBRACK T_RBRACK ElementType
           ;
@@ -238,7 +251,7 @@ ParameterList : ParameterDecl
 
 /*Поменял IdentifierList на ID во второй строчке*/
 ParameterDecl : IdentifierList T_DOTDOTDOT Type
-              | T_ID Type
+              | IdentifierList Type
               | T_DOTDOTDOT Type
               | Type
               ;
@@ -268,15 +281,15 @@ MapType : T_MAP T_LBRACK KeyType T_RBRACK ElementType
 KeyType : Type 
         ;
 
-ChanelType : T_CHAN ElementType 
-           | T_CHAN T_SENDOP ElementType
-           | T_SENDOP T_CHAN ElementType
+ChanelType : T_CHAN SecondElementType /*ElementType */
+           | T_CHAN T_SENDOP SecondElementType /* ElementType*/
+           | T_SENDOP T_CHAN SecondElementType/* ElementType*/
            ;
 
 Block : T_LCURLYBR StatmentList T_RCURLYBR
         ;
 
-StatmentList : Statment T_SEMI StatmentList
+StatmentList : Statment T_SEMI StatmentList 
 /*             | Statment StatmentList*/
              |
              ;
@@ -309,7 +322,7 @@ IdentifierList : T_ID
                 | T_ID T_COMMA IdentifierList
                 ;
 
-ExpressionList  : Expression
+ExpressionList  : Expression 
                 | Expression T_COMMA ExpressionList
                 ;
 
@@ -366,13 +379,14 @@ MethodDecl      : T_FUNC Receiver MethodName Signature FunctionBody
 Receiver        : Parameters
                 ;
 
+/*заменено operandName на TypeName и в LiteralType закоментировали TypeName*/
 Operand         : Literal
-                | OperandName
+                | T_ID
                 | T_LPAREN Expression T_RPAREN
                 ;
 
 Literal : BasicLit
-        | CompositeLit
+        | CompositeLit /*-2*/
         | FunctionLit
         ;
 
@@ -397,8 +411,8 @@ LiteralType     : StruckType
                 | ArrayType 
                 | T_LBRACK T_DOTDOTDOT T_RBRACK ElementType
                 | SliceType 
-                | MapType
-                | TypeName 
+                | MapType/*
+                | TypeName */
                 ;
 
 LiteralValue    : T_LCURLYBR ElementList T_COMMA T_RCURLYBR
@@ -433,13 +447,13 @@ FunctionLit     : T_FUNC Signature FunctionBody
                 ;
 
 PrimaryExpr     : Operand 
-                | Convertion /*-7 Юхe*/
-                | MethodExpr
-                | PrimaryExpr Selector /*-0, но похуй*/
-                | PrimaryExpr Index
-                | PrimaryExpr Slice
-                | PrimaryExpr TypeAssertion /*-2 */
-                | PrimaryExpr Arguments /*-8*/
+                | Convertion /*-0 Юхe*//*Dead because of ID, but with number OK*/
+                | MethodExpr/*-1*//*Alive*/
+                | PrimaryExpr Selector /*Alive*/
+                | PrimaryExpr Index /*Dead*/
+                | PrimaryExpr Slice /*Dead*/
+                | PrimaryExpr TypeAssertion /*Dead*/
+                | PrimaryExpr Arguments /*-1*/ /*Dead*/
                 ;
 
 Selector        : T_DOT T_ID
@@ -447,12 +461,12 @@ Selector        : T_DOT T_ID
 Index   : T_LBRACK Expression T_RBRACK
         ;
 
-Slice   : T_RBRACK Expression T_COLON Expression T_RBRACK
-        | T_RBRACK T_COLON Expression T_RBRACK
-        | T_RBRACK Expression T_COLON T_RBRACK
-        | T_RBRACK T_COLON T_RBRACK
-        | T_RBRACK Expression T_COLON Expression T_COLON Expression T_RBRACK
-        | T_RBRACK T_COLON Expression T_COLON Expression T_RBRACK
+Slice   : T_LBRACK Expression T_COLON Expression T_RBRACK
+        | T_LBRACK T_COLON Expression T_RBRACK
+        | T_LBRACK Expression T_COLON T_RBRACK
+        | T_LBRACK T_COLON T_RBRACK
+        | T_LBRACK Expression T_COLON Expression T_COLON Expression T_RBRACK
+        | T_LBRACK T_COLON Expression T_COLON Expression T_RBRACK
         ;
 
 TypeAssertion   : T_DOT T_LPAREN Type T_RPAREN
@@ -460,31 +474,41 @@ TypeAssertion   : T_DOT T_LPAREN Type T_RPAREN
 
 /*Ошибка*/
 Arguments       : T_LPAREN ExpressionList T_DOTDOTDOT T_COMMA T_RPAREN
-                | T_LPAREN Type T_COMMA ExpressionList T_DOTDOTDOT T_COMMA T_RPAREN
-                | T_LPAREN Type T_DOTDOTDOT T_COMMA T_RPAREN
+                | T_LPAREN TypeSpecial T_COMMA ExpressionList T_DOTDOTDOT T_COMMA T_RPAREN
+                | T_LPAREN TypeSpecial T_DOTDOTDOT T_COMMA T_RPAREN
                 | T_LPAREN ExpressionList T_COMMA T_RPAREN
-                | T_LPAREN Type T_COMMA ExpressionList T_COMMA T_RPAREN
-                | T_LPAREN Type T_COMMA T_RPAREN
+                | T_LPAREN TypeSpecial T_COMMA ExpressionList T_COMMA T_RPAREN
+                | T_LPAREN TypeSpecial T_COMMA T_RPAREN
                 | T_LPAREN ExpressionList T_DOTDOTDOT T_RPAREN
-                | T_LPAREN Type T_COMMA ExpressionList T_DOTDOTDOT T_RPAREN
-                | T_LPAREN Type T_DOTDOTDOT T_RPAREN
+                | T_LPAREN TypeSpecial T_COMMA ExpressionList T_DOTDOTDOT T_RPAREN
+                | T_LPAREN TypeSpecial T_DOTDOTDOT T_RPAREN
                 | T_LPAREN ExpressionList T_RPAREN
-                | T_LPAREN Type T_COMMA ExpressionList T_RPAREN
-                | T_LPAREN Type T_RPAREN
+                | T_LPAREN TypeSpecial T_COMMA ExpressionList T_RPAREN
+                | T_LPAREN TypeSpecial T_RPAREN
                 | T_LPAREN T_RPAREN
+                ;
+
+TypeSpecial     : TypeLit
+                | T_LPAREN TypeLit T_RPAREN
                 ;
 
 MethodExpr      : ReceiverType T_DOT MethodName
                 ;
 
-ReceiverType    : Type
+ReceiverType    : TypeForMethodExpr
                 ;
 
-Expression      : UnaryExpr
+/*Добавленно вместо Type*/
+TypeForMethodExpr       : /*QualifiedIdent
+                        | */TypeLit
+                        | T_LPAREN TypeLit T_RPAREN
+                        ;
+
+Expression      : UnaryExpr 
                 | Expression binary_op Expression
                 ;
 
-UnaryExpr       : PrimaryExpr
+UnaryExpr       : PrimaryExpr  
                 | unary_op UnaryExpr
                 ;
 
@@ -527,13 +551,13 @@ unary_op        : T_ADDOP
                 | T_SENDOP
                 ;
 
-Convertion      : Type T_LPAREN Expression T_COMMA T_RPAREN
-                | Type T_LPAREN Expression T_RPAREN
+Convertion      : TypeLit T_LPAREN Expression T_COMMA T_RPAREN
+                | TypeLit T_LPAREN Expression T_RPAREN
                 ;
 
 Statment        : Declaration 
                 | LabeledStmt /*-3 Йухууу*/
-                | SimpleStmt  /*-3 */ /*Траблы в ShortVarDecl -> IdentifierList*/
+                | SimpleStmt  /*-3 */ /*Траблы в ShortVarDecl -> IdentifierList*/  
                 | GoStmt
                 | ReturnStmt
                 | BreakStmt
@@ -542,14 +566,14 @@ Statment        : Declaration
                 | FallthoughStmt
                 | Block 
                 | IfStmt
-                | SwitchStmt /*-9*/
+                | SwitchStmt /*-4*/
                 | SelectStmt
                 | ForStmt
                 | DeferStmt
                 ;
 
 SimpleStmt      : EmptyStmt
-                | ExpressionStmt
+                | ExpressionStmt 
                 | SendStmt
                 | IncDecStmt
                 | Assignment
@@ -597,15 +621,15 @@ IfStmt  : T_IF SimpleStmt T_SEMI Expression Block T_ELSE IfStmt
         | T_IF Expression Block 
         ;
 
-SwitchStmt      : ExprSwitchStmt /*-2*/
-                | TypeSwitchStmt /*-9*/
+SwitchStmt      : ExprSwitchStmt /*0*/
+                | TypeSwitchStmt /*-4*/
                 ;
 
-ExprSwitchStmt  : T_SWITCH SimpleStmt T_SEMI Expression T_LCURLYBR ExprCaseClauseLoop T_RCURLYBR
+ExprSwitchStmt  : T_SWITCH SimpleStmt T_SEMI T_LPAREN Expression T_RPAREN T_LCURLYBR ExprCaseClauseLoop T_RCURLYBR
                 | T_SWITCH SimpleStmt T_SEMI T_LCURLYBR ExprCaseClauseLoop T_RCURLYBR
 /*                | T_SWITCH SimpleStmt Expression T_LCURLYBR ExprCaseClauseLoop T_RCURLYBR
                 | T_SWITCH SimpleStmt T_LCURLYBR ExprCaseClauseLoop T_RCURLYBR*/
-                | T_SWITCH Expression T_LCURLYBR ExprCaseClauseLoop T_RCURLYBR
+                | T_SWITCH T_LPAREN Expression T_RPAREN T_LCURLYBR ExprCaseClauseLoop T_RCURLYBR
                 | T_SWITCH T_LCURLYBR ExprCaseClauseLoop T_RCURLYBR
                 ;
 
@@ -622,15 +646,15 @@ ExprSwitchCase  : T_CASE ExpressionList
 
 TypeSwitchStmt  : T_SWITCH SimpleStmt T_SEMI TypeSwitchGuard T_LCURLYBR TypeCaseClauseLoop T_RCURLYBR
 /*                | T_SWITCH SimpleStmt TypeSwitchGuard T_LCURLYBR TypeCaseClauseLoop T_RCURLYBR*/
-                | T_SWITCH TypeSwitchGuard T_LCURLYBR TypeCaseClauseLoop T_RCURLYBR /*-5 TypeSwitchGuard*/
+                | T_SWITCH TypeSwitchGuard T_LCURLYBR TypeCaseClauseLoop T_RCURLYBR /*-2 TypeSwitchGuard*/
                 ;
 
 TypeCaseClauseLoop      : TypeCaseClause TypeCaseClauseLoop
                         |
                         ;
 
-TypeSwitchGuard         : T_ID T_ASSIGN PrimaryExpr T_DOT T_LPAREN T_TYPE T_RPAREN
-                        | PrimaryExpr T_DOT T_LPAREN T_TYPE T_RPAREN
+TypeSwitchGuard         : T_ID T_ASSIGN PrimaryExpr T_DOT T_LPAREN T_TYPE T_RPAREN /*-4*/
+                        | PrimaryExpr T_DOT T_LPAREN T_TYPE T_RPAREN /*-2*/
                         ;
 
 TypeCaseClause  : TypeSwitchCase T_COLON StatmentList
@@ -722,7 +746,7 @@ FallthoughStmt  : T_FALLTHROUGH
 DeferStmt       : T_DEFER Expression
                 ;
 
-SourceFile      : PackageClause T_SEMI ImportDeclLoop TopLevelDeclLoop T_EOF
+SourceFile      : PackageClause T_SEMI ImportDeclLoop TopLevelDeclLoop T_EOF 
 /*                | PackageClause ImportDeclLoop TopLevelDeclLoop*/
                 ;
 
@@ -736,10 +760,10 @@ TopLevelDeclLoop        : TopLevelDecl T_SEMI TopLevelDeclLoop
                         | 
                         ;
 
-PackageClause   : T_PACKAGE PackageName
+PackageClause   : T_PACKAGE PackageName 
                 ;
 
-PackageName     : T_ID
+PackageName     : T_ID 
                 ;
 
 ImportDecl      : T_IMPORT ImportSpec

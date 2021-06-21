@@ -189,7 +189,7 @@ SPEC [NnFfTtVvBbRr]
 "++"    {yylval.string = strdup(yytext); return( T_DOUBLEPLUSOP );}
 "--"    {yylval.string = strdup(yytext); return( T_DOUBLEMINUSOP );}
 
-"\n"    {line_no++; printf("Line %d", line_no);/*; yylval.string = strdup(yytext); return( T_NL);*/}
+"\n"    {line_no++; printf("Line %d \n", line_no);/*; yylval.string = strdup(yytext); return( T_NL);*/}
 "\t"    ;
 
 "{"     {yylval.string = strdup(yytext); return( T_LCURLYBR );}
@@ -200,12 +200,12 @@ SPEC [NnFfTtVvBbRr]
 "]"     {yylval.string = strdup(yytext); return( T_RBRACK );}
 
 ";"     {yylval.string = strdup(yytext); return( T_SEMI );}
+"..."   {yylval.string = strdup(yytext); return( T_DOTDOTDOT );}
 "."     {yylval.string = strdup(yytext); return( T_DOT );}
 ","     {yylval.string = strdup(yytext); return( T_COMMA );}
 ":"     {yylval.string = strdup(yytext); return( T_COLON );}
 ":="    {yylval.string = strdup(yytext); return( T_ASSIGN );}
 "="     {yylval.string = strdup(yytext); return( T_ASSIGNOP );}
-"..."   {yylval.string = strdup(yytext); return( T_DOTDOTDOT );}
 "//"    {yylval.string = strdup(yytext); return( T_SIMPLCOMMENT );}
 "/*"    {yylval.string = strdup(yytext); return( T_LBLOCKCOMMET );}
 "*/"    {yylval.string = strdup(yytext); return( T_RBLOCKCOMMET );}
@@ -234,7 +234,8 @@ SPEC [NnFfTtVvBbRr]
 {String_Lit} {/*yylval.string = yytext.substr(1, yytext.size() - 2);*/ return(T_SCONST);}
 
 
-<<EOF>>     {/*yylval.string = "EOF";*/ return ( T_EOF );}
+<<EOF>>     {/*yylval.string = "EOF";*/ /*printf("EOF\n")*/; return ( T_EOF );}
+"exit"      {return (T_EOF);}
 {W}         {}
 .           {ECHO; yyerror ("unexpected character");}
 

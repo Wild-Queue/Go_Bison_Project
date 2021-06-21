@@ -1,19 +1,42 @@
 package main;
-import "fmt";
-func main();
-func man() {
-	var c int = 4;
-	a := 2;
-	b := a;
-	b := a;
-	c = a + b;
-	if x<0 {
-		a := 12;
-	};
-	for v := range a {
-		a := 1;
-	}
-	
-	fmt.Println(a, b); 
-	var a [5]int;
-}
+import (
+    "fmt";
+    "math";
+);
+const s string = "constant";
+
+func (p *Point) Length() float64 {
+  return math.Sqrt(p.x * p.x + p.y * p.y);
+};
+
+type Circle struct {
+	x float64;
+	y float64;
+	r float64;
+};
+
+type Circle interface {
+	Circle() float64;
+};
+
+func main() {
+    var m map[string]int;
+    var a *int;
+    a = a.b.c.c.c;
+    var s []int;
+    map[string]int.b;
+    map[string]int(a+2);
+    var a chan int;
+    c <- sum;
+    a++;
+    break;
+    for i := 0; i < 10 ; i++{
+    	a := 40;
+    	go a;	
+    };
+    a := a + b;
+    fmt.Println(s);
+    const n = 500000000;
+    const d = 3e20 / n;
+    fmt.Println(d);
+};
